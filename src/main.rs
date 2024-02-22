@@ -2,7 +2,7 @@ mod  pentry;
 
 use crate::pentry::prompt;
 use crate::pentry::read_password_from_file;
-
+use crate::pentry::ServiceInfo;
 fn clr(){
     print!("{}[2J",27 as char);
 
@@ -21,15 +21,16 @@ fn main(){
      println!("{ascii}");
      loop {
          println!("Password manager menu:");
-         println!("2. Add Entery:");
-         println!("3.List Entries:");
-         println!("4. Quit:");
+         println!("1. Add Entery:");
+         println!("2.List Entries:");
+         println!("4. Search:");
+         println!("3. Quit:");
          let mut choice =String::new();
          std::io::stdin().read_line(&mut choice).unwrap();
          match choice.trim() {
             "1"=> {
              clr();
-             let entry = Serviceinfo::new (
+             let entry = ServiceInfo::new (
                 prompt("Service :"),
                 prompt("Username :"),
                 prompt("Password :"),

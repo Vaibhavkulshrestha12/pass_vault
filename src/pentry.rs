@@ -1,11 +1,8 @@
  use serde::{Deserialize,Serialize};
- use std::fmt::format;
-use std::fs::read;
 use std::fs::File;
  use std::fs::OpenOptions;
  use std::io;
  use std::io::BufRead;
- use std::io::Read;
 use std::io::Write;
 
 #[derive(Debug, Serialize,Deserialize)]
@@ -45,6 +42,7 @@ use std::io::Write;
      io::stdin()
       .read_line(&mut password)
       .expect("Failed to read line ");
+     
     ServiceInfo::new(service.trim().to_string(), username.trim().to_string(), password.trim().to_string())
    }
    pub fn to_json(&self) ->String{
@@ -53,7 +51,7 @@ use std::io::Write;
    }
 
    pub fn write_to_file(&self){
-    let json_output =format("{}\n", self.to_json());
+    let json_output =format!("{}\n", self.to_json());
 
 
     match OpenOptions::new()
@@ -62,13 +60,13 @@ use std::io::Write;
       .open("passwords.json")
       {
         Ok (mut file ) => {
-            file.write_all(json_output.as_bytes()){
+           if let Err(e)= file.write_all(json_output.as_bytes()){
                  eprintln!("Error writing to file : {}",e);
             } else {
                 println!("successfully wrote to passwords.json")
             }
         }
-         Err(e) => eprintln!("Error opening file :{}",e);
+         Err(e) => eprintln!("Error opening file :{}",e),
 
 
 
@@ -76,21 +74,24 @@ use std::io::Write;
 
       }
    }
-
-
-
  }
- pub fn read_password_from_file() -> Result<Vec<ServiceInfo>,io::Error{
+
+
+    pub fn read_password_from_file() -> Result<Vec<ServiceInfo>,io::Error>{
     let file = File::open("password.json")?;
     let reader =io::BufReader::new(file);
     let mut services = Vec::new();
-    for line in reader.line(){
-        if let Ok(json_string)={
-            if
+
+    for line in reader.lines(){
+        if let Ok(json_string)=line {
+            if let Ok (service_info)=ServiceInfo::from_json(&json_string){
+                services.push(service_info);
+            }
         }
     }
+    Ok(services)
  }
- pub fn prompt(prompt &str) -> String{
+ pub fn prompt(prompt: &str) -> String{
     print!("{}",prompt);
     io::stdout().flush().unwrap();
     let mut input = String::new();
