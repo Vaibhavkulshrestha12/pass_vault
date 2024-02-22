@@ -29,9 +29,14 @@ fn main(){
          match choice.trim() {
             "1"=> {
              clr();
-             let entry = Service::info (
-                
-             )
+             let entry = Serviceinfo::new (
+                prompt("Service :"),
+                prompt("Username :"),
+                prompt("Password :"),
+
+             );
+             println!("ENtry added succesfully.");
+             entry.write_to_file();
             }
              "2" => {
               clr();
