@@ -24,7 +24,7 @@ use std::io::Write;
   }
    #[allow(dead_code)]
    pub fn from_user_input() -> Self{
-    println!("Enter the password Entery: ");
+    println!("Enter the password Entry: ");
     let mut service =String::new();
     io::stdin()
      .read_line(&mut service)
